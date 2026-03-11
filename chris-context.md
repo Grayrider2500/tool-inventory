@@ -121,6 +121,19 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 - Matches Command Center aesthetic: dark industrial theme, Share Tech Mono + Barlow Condensed fonts, amber/blue/green accent palette
 - Category color bars on cards (each category has a unique color)
 
+### Hosting
+- **GitHub repo:** https://github.com/Grayrider2500/tool-inventory
+- **Live URL:** https://grayrider2500.github.io/tool-inventory/tool-inventory.html
+- Deployed via GitHub Pages (master branch, root path)
+- To update after edits:
+  ```bash
+  cd "/Users/chriscross/Documents/Tool Inventory"
+  git add tool-inventory.html
+  git commit -m "describe what changed"
+  git push
+  ```
+  Live URL updates automatically within ~2 minutes of push.
+
 ---
 
 ## Development Environment (Mac Mini — Chris's Shop)
@@ -130,6 +143,7 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 | Git | 2.53.0 | ✅ Installed |
 | Node.js | 24.14.0 | ✅ Installed |
 | Claude Code | Latest | ✅ Installed |
+| GitHub CLI (gh) | 2.88.0 | ✅ Installed via Homebrew, authenticated as Grayrider2500 |
 | Xcode | Latest | ✅ Downloaded and ready |
 | VS Code | Latest | ✅ Active — primary editing environment |
 
@@ -139,29 +153,27 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 - Chris uses **Claude Code inside VS Code** as his primary development workflow
 - GitHub account exists — repo not yet created for these apps
 
-## GitHub / Hosting — Next Steps
+## GitHub / Hosting
 
-Chris wants both apps accessible via URL on phone and iPad. Plan:
+Both apps are deployed via GitHub Pages. GitHub account: **Grayrider2500**
 
-1. Create a GitHub repo (suggested name: `shop-apps` or `cross-tools`)
-2. Add both HTML files to it
-3. Enable **GitHub Pages** (Settings → Pages → main branch / root)
-4. Both apps live at `https://williamcross.github.io/repo-name/filename.html`
-5. Bookmark those URLs on phone and iPad
-6. Future updates: edit in VS Code → `git add . && git commit -m "message" && git push`
+| App | Repo | Live URL |
+|-----|------|----------|
+| Needle/Hook Tracker | https://github.com/Grayrider2500/needle-hook-tracker | https://grayrider2500.github.io/needle-hook-tracker/needle_tracker.html |
+| Tool Inventory | https://github.com/Grayrider2500/tool-inventory | https://grayrider2500.github.io/tool-inventory/tool-inventory.html |
 
-**Recommended Git workflow for Claude Code sessions in VS Code:**
+**Git workflow for any app update:**
 ```bash
-git add .
+cd "/path/to/app folder"
+git add filename.html
 git commit -m "describe what changed"
 git push
 ```
+Live URL updates automatically within ~2 minutes of push.
 
-Git identity setup (one-time, if not done):
-```bash
-git config --global user.name "Chris Cross"
-git config --global user.email "your@email.com"
-```
+Git identity (already configured globally):
+- Name: Chris C.
+- Email: Grayrider2500@yahoo.com
 
 ---
 
