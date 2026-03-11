@@ -121,6 +121,9 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 - Matches Command Center aesthetic: dark industrial theme, Share Tech Mono + Barlow Condensed fonts, amber/blue/green accent palette
 - Category color bars on cards (each category has a unique color)
 
+### Known Future Changes
+- **App icon** — header logo updated to inline SVG toolbox icon (from SVG Repo). Card no-photo placeholder still uses 🔧 emoji — could be updated to SVG data URI in the future if desired.
+
 ### Hosting
 - **GitHub repo:** https://github.com/Grayrider2500/tool-inventory
 - **Live URL:** https://grayrider2500.github.io/tool-inventory/tool-inventory.html
