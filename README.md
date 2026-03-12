@@ -19,7 +19,7 @@ A single-file HTML/CSS/JS app for tracking tools and equipment across a property
 - **⬇ Restore** — reads a backup `.json` back in (arrow points down = bringing data in), two modes:
   - **⬇ Merge** — adds new records, skips duplicates by ID (safe, non-destructive)
   - **Replace All** — wipes current data and loads the backup fresh
-- **Print view** — clean black-and-white printable layout with a "Prepared for Patty Cross" header
+- **Print view** — clean black-and-white printable layout; clicking Print opens a prompt to enter the "Prepared for" name (defaults to "Patty Cross")
 
 ---
 

@@ -111,7 +111,7 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 - **Restore (Import)** — reads a backup `.json` with two modes:
   - **Merge** — adds new records, skips duplicates matched by ID (safe, non-destructive)
   - **Replace All** — wipes current data and loads backup fresh
-- Print view — clean black-and-white printable layout with "Prepared for Patty Cross" header
+- Print view — clean black-and-white printable layout; Print button opens a modal to enter the "Prepared for" name (defaults to "Patty Cross")
 
 ### Storage
 - localStorage key: `cross_tools_v1`
