@@ -20,6 +20,7 @@ A single-file HTML/CSS/JS app for tracking tools and equipment across a property
   - **⬇ Merge** — adds new records, skips duplicates by ID (safe, non-destructive)
   - **Replace All** — wipes current data and loads the backup fresh
 - **Print view** — clean black-and-white printable layout; clicking Print opens a prompt to enter the "Prepared for" name (defaults to "Patty Cross")
+- **Editable subtitle** — the "Cross Property — Northwest Alabama" line in the header is click-to-edit; changes are saved to `localStorage` under `inventory_subtitle` and carry through to the print header
 
 ---
 
@@ -58,12 +59,13 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 
 ## Design
 
-- Dark industrial theme
+- Medium gray industrial theme with orange and black lettering
 - Fonts: Share Tech Mono + Barlow Condensed
 - Accent palette: amber / blue / green
 - Each category has a unique color bar on its card
 - Mobile-optimized with 44–52px touch targets, pinch-to-zoom disabled
 - Can be added to the iOS home screen via Safari Share → Add to Home Screen
+- UI layers use distinct gray tones for contrast: lighter inputs/dropdowns (`#eef0f4`), mid-gray toolbar, darker header band, and clearly visible dark borders (`#606470`)
 
 ---
 
