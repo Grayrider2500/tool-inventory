@@ -444,8 +444,8 @@ header{
   </div>
   <div class="header-right">
     <button class="btn ghost" onclick="printInventory()">⎙ Print</button>
-    <button class="btn ghost" onclick="exportJSON()">⬇ Backup</button>
-    <button class="btn ghost" onclick="triggerImport()">⬆ Restore</button>
+    <button class="btn ghost" onclick="exportJSON()">⬆ Backup</button>
+    <button class="btn ghost" onclick="triggerImport()">⬇ Restore</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
     <button class="btn pri" onclick="openAddModal()">＋ Add Tool</button>
   </div>
@@ -670,7 +670,7 @@ header{
     <button class="btn" onclick="closeModal('importOverlay')">Cancel</button>
     <div class="mftr-right">
       <button class="btn danger" onclick="doImport('replace')">⚠ Replace All</button>
-      <button class="btn pri" onclick="doImport('merge')">⬆ Merge</button>
+      <button class="btn pri" onclick="doImport('merge')">⬇ Merge</button>
     </div>
   </div>
 </div>

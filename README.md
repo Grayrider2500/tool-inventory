@@ -15,9 +15,9 @@ A single-file HTML/CSS/JS app for tracking tools and equipment across a property
 - **Filter** by Category, Location, or Condition
 - **Sort** by name, estimated value (high/low), category, location, or recently added
 - **Summary bar** showing total estimated value with breakdown by location
-- **Backup (Export)** — downloads a dated `.json` file: `tool-inventory-YYYY-MM-DD.json`
-- **Restore (Import)** — two modes:
-  - **Merge** — adds new records, skips duplicates by ID (safe, non-destructive)
+- **⬆ Backup** — downloads a dated `.json` file: `tool-inventory-YYYY-MM-DD.json` (arrow points up = sending data out)
+- **⬇ Restore** — reads a backup `.json` back in (arrow points down = bringing data in), two modes:
+  - **⬇ Merge** — adds new records, skips duplicates by ID (safe, non-destructive)
   - **Replace All** — wipes current data and loads the backup fresh
 - **Print view** — clean black-and-white printable layout with a "Prepared for Patty Cross" header
 
