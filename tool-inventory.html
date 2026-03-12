@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0d0e10; --surface:#15171c; --surface2:#1c1f27; --surface3:#232830;
+  --bg:#1a1c21; --surface:#22252d; --surface2:#292d38; --surface3:#30353f;
   --border:#2a3040; --accent:#e8a020; --accent2:#4a9eff; --accent3:#3ecf8e;
   --danger:#e05252; --purple:#a78bfa; --orange:#f97316;
   --text:#c8ccd6; --dim:#58667a; --bright:#edf0f7;
@@ -45,7 +45,8 @@ header{
   display:grid;place-items:center;font-size:1rem;color:var(--accent);
 }
 .logo-text{font-family:var(--sans);font-weight:900;font-size:1.1rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);}
-.logo-sub{font-family:var(--mono);font-size:0.62rem;color:var(--dim);letter-spacing:0.1em;margin-top:1px;}
+.logo-sub{font-family:var(--mono);font-size:0.62rem;color:var(--dim);letter-spacing:0.1em;margin-top:1px;cursor:text;border-bottom:1px dashed transparent;transition:border-color 0.2s;}
+.logo-sub:hover,.logo-sub:focus{border-bottom-color:var(--dim);outline:none;}
 .header-right{display:flex;align-items:center;gap:0.75rem;}
 
 /* ── TOOLBAR ── */
@@ -439,7 +440,7 @@ header{
     </div>
     <div>
       <div class="logo-text">Tool Inventory</div>
-      <div class="logo-sub">Cross Property — Northwest Alabama</div>
+      <div class="logo-sub" id="logoSubtitle" contenteditable="true" spellcheck="false" title="Click to edit">Cross Property — Northwest Alabama</div>
     </div>
   </div>
   <div class="header-right">
@@ -708,6 +709,20 @@ let currentView = 'grid';
 let photoData = [null, null]; // base64 for up to 2 photos
 
 function save() { localStorage.setItem(STORE_KEY, JSON.stringify(tools)); }
+
+// ── SUBTITLE ──────────────────────────────────────────────────────────
+const SUBTITLE_KEY = 'inventory_subtitle';
+(function initSubtitle() {
+  const el = document.getElementById('logoSubtitle');
+  const stored = localStorage.getItem(SUBTITLE_KEY);
+  if (stored) el.textContent = stored;
+  el.addEventListener('blur', () => {
+    const val = el.textContent.trim() || 'Cross Property — Northwest Alabama';
+    el.textContent = val;
+    localStorage.setItem(SUBTITLE_KEY, val);
+  });
+  el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+})();
 
 // ── CATEGORY HELPERS ─────────────────────────────────────────────────
 const catKey = c => c ? c.toLowerCase().replace(/[^a-z]/g,'').replace('powertools','power').replace('handtools','hand').replace('outdoorland','outdoor').replace('measuring','measuring') : 'other';
@@ -992,7 +1007,8 @@ function deleteFromDetail() {
 // ── PRINT ─────────────────────────────────────────────────────────────
 function printInventory() {
   const name = (document.getElementById('printName').value.trim()) || 'Patty Cross';
-  document.getElementById('printFor').textContent = 'Cross Property · Northwest Alabama · Prepared for ' + name;
+  const subtitle = document.getElementById('logoSubtitle').textContent.trim() || 'Cross Property — Northwest Alabama';
+  document.getElementById('printFor').textContent = subtitle + ' · Prepared for ' + name;
   document.getElementById('printDate').textContent = 'Printed: ' + new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
   closeModal('printOverlay');
   window.print();
