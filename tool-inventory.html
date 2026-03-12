@@ -863,8 +863,8 @@ function renderTools() {
 
 // ── ADD / EDIT MODAL ─────────────────────────────────────────────────
 function openAddModal(id) {
-  editingId = id || null;
-  const t = id ? tools.find(x => x.id === id) : null;
+  editingId = id ? +id : null;
+  const t = editingId ? tools.find(x => x.id === editingId) : null;
   document.getElementById('addModalTitle').textContent = t ? 'Edit Tool / Equipment' : 'Add Tool / Equipment';
   document.getElementById('f-name').value    = t ? t.name    : '';
   document.getElementById('f-brand').value   = t ? t.brand   : '';
