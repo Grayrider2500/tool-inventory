@@ -716,6 +716,7 @@ let editingId = null;
 let detailId = null;
 let currentView = 'grid';
 let photoData = [null, null]; // base64 for up to 2 photos
+let pendingImport = null; // holds parsed backup data waiting for confirm
 
 function save() { localStorage.setItem(STORE_KEY, JSON.stringify(tools)); }
 
@@ -1045,7 +1046,6 @@ function exportJSON() {
 // ── IMPORT (RESTORE) ──────────────────────────────────────────────────
 function importJSON(input) {
   const file = input.files[0];
-  input.value = '';
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
@@ -1059,7 +1059,8 @@ function importJSON(input) {
       document.getElementById('im-count').textContent = incoming.length;
       document.getElementById('im-existing').textContent = tools.length;
       // Store parsed data for use when user confirms
-      window._importBuffer = incoming;
+      pendingImport = incoming;
+      input.value = '';
       document.getElementById('importOverlay').classList.add('open');
     } catch(err) {
       alert('Could not read that file. Make sure it\'s a valid Tool Inventory backup (.json).');
@@ -1078,18 +1079,24 @@ function cancelReplace() {
   document.getElementById('im-footer').style.display = '';
 }
 function confirmReplace() {
-  const incoming = window._importBuffer || [];
-  if (!incoming.length) return;
-  tools = incoming;
-  save(); closeModal('importOverlay'); renderTools();
-  cancelReplace();
-  showToast(`Done. ${tools.length} tools loaded.`);
+  try {
+    if (!pendingImport || !pendingImport.length) { showToast('No backup data — please re-select the file'); return; }
+    tools = pendingImport;
+    pendingImport = null;
+    save();
+    closeModal('importOverlay');
+    renderTools();
+    showToast(`Done. ${tools.length} tools loaded.`);
+  } catch(e) {
+    showToast('Error: ' + (e.message || 'unknown error'));
+  }
 }
 
 function doImport(mode) {
-  const incoming = window._importBuffer || [];
-  if (!incoming.length) return;
+  if (!pendingImport || !pendingImport.length) return;
   // Merge — skip any records whose id already exists
+  const incoming = pendingImport;
+  pendingImport = null;
   const existingIds = new Set(tools.map(t => String(t.id)));
   const newItems = incoming.filter(t => !existingIds.has(String(t.id)));
   const skipped  = incoming.length - newItems.length;
@@ -1118,7 +1125,7 @@ function showToast(msg) {
 // ── MODALS ────────────────────────────────────────────────────────────
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
-  if (id === 'importOverlay') cancelReplace();
+  if (id === 'importOverlay') { cancelReplace(); pendingImport = null; }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
