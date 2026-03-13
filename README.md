@@ -18,7 +18,8 @@ A single-file HTML/CSS/JS app for tracking tools and equipment across a property
 - **⬆ Backup** — downloads a dated `.json` file: `tool-inventory-YYYY-MM-DD.json` (arrow points up = sending data out)
 - **⬇ Restore** — reads a backup `.json` back in (arrow points down = bringing data in), two modes:
   - **⬇ Merge** — adds new records, skips duplicates by ID (safe, non-destructive)
-  - **Replace All** — wipes current data and loads the backup fresh
+  - **Replace All** — wipes current data and loads the backup fresh; uses an in-modal confirmation panel (no browser dialogs, which are suppressed in iOS standalone/PWA mode)
+  - If the backup exceeds the 5MB localStorage limit, tool records are saved without photos and a warning toast is shown; all text fields are preserved
 - **Print view** — clean black-and-white printable layout; clicking Print opens a prompt to enter the "Prepared for" name (defaults to "Patty Cross")
 - **Editable subtitle** — the "Cross Property — Northwest Alabama" line in the header is click-to-edit; changes are saved to `localStorage` under `inventory_subtitle` and carry through to the print header
 
@@ -53,6 +54,9 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 - Data is stored in `localStorage` under the key `cross_tools_v1`
 - Storage is browser/device specific — no cross-device sync
 - Photos stored as base64 inside tool records — backup files can be large with many photos
+- **iOS localStorage limit is ~5MB** — keep photos under 100KB each; with 2 photos per tool that allows roughly 20–25 tools with photos before hitting the limit
+- Recommended photo size: **800×600px, JPEG, under 100KB**; shoot in good light and use iOS Settings → Camera → Formats → Most Compatible (JPEG)
+- If storage is exceeded on import, tool records load without photos and a warning is shown
 - **Export regularly** to keep a backup outside the browser
 
 ---
@@ -66,6 +70,8 @@ Main Shop, Wood Shop, House, Storage/Barn, Other
 - Mobile-optimized with 44–52px touch targets, pinch-to-zoom disabled
 - Can be added to the iOS home screen via Safari Share → Add to Home Screen
 - UI layers use distinct gray tones for contrast: lighter inputs/dropdowns (`#eef0f4`), mid-gray toolbar, darker header band, and clearly visible dark borders (`#606470`)
+- Restore button uses a `<label>` wrapping the file input (not a programmatic `.click()`) for reliable iOS file picker behavior
+- Grid renders with a forced reflow (`void grid.offsetHeight`) and deferred initial render (`requestAnimationFrame`) to ensure base64 photos paint correctly on first load in iOS Safari
 
 ---
 
