@@ -446,8 +446,9 @@ header{
   <div class="header-right">
     <button class="btn ghost" onclick="document.getElementById('printOverlay').classList.add('open')">⎙ Print</button>
     <button class="btn ghost" onclick="exportJSON()">⬆ Backup</button>
-    <button class="btn ghost" onclick="triggerImport()">⬇ Restore</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    <label class="btn ghost" style="cursor:pointer">⬇ Restore
+      <input type="file" id="importFile" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;" onchange="importJSON(this)">
+    </label>
     <button class="btn pri" onclick="openAddModal()">＋ Add Tool</button>
   </div>
 </header>
@@ -1034,13 +1035,9 @@ function exportJSON() {
 }
 
 // ── IMPORT (RESTORE) ──────────────────────────────────────────────────
-function triggerImport() {
-  document.getElementById('importFile').value = '';
-  document.getElementById('importFile').click();
-}
-
 function importJSON(input) {
   const file = input.files[0];
+  input.value = '';
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
