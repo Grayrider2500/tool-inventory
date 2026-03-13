@@ -690,10 +690,18 @@ header{
       <strong style="color:var(--danger)">Replace</strong> — Deletes everything currently in this browser and loads the backup file fresh. Use this to fully restore from a backup.
     </div>
   </div>
-  <div class="mftr">
+  <div id="im-confirm-panel" style="display:none;background:#5a1010;border:1px solid var(--danger);padding:1rem;border-radius:var(--radius);margin:0 1.25rem 1rem;">
+    <div style="font-family:var(--sans);font-weight:700;font-size:1rem;color:#ff6b6b;margin-bottom:0.4rem">⚠ This cannot be undone</div>
+    <div style="font-family:var(--body);font-size:0.88rem;color:#eee;margin-bottom:0.9rem">All <span id="im-existing2">0</span> tools currently in this browser will be permanently deleted and replaced with the backup file.</div>
+    <div style="display:flex;gap:0.5rem">
+      <button class="btn" onclick="cancelReplace()">Cancel</button>
+      <button class="btn danger" onclick="confirmReplace()">Yes, Replace All</button>
+    </div>
+  </div>
+  <div class="mftr" id="im-footer">
     <button class="btn" onclick="closeModal('importOverlay')">Cancel</button>
     <div class="mftr-right">
-      <button class="btn danger" onclick="doImport('replace')">⚠ Replace All</button>
+      <button class="btn danger" onclick="askReplace()">⚠ Replace All</button>
       <button class="btn pri" onclick="doImport('merge')">⬇ Merge</button>
     </div>
   </div>
@@ -1060,33 +1068,58 @@ function importJSON(input) {
   reader.readAsText(file);
 }
 
+function askReplace() {
+  document.getElementById('im-existing2').textContent = tools.length;
+  document.getElementById('im-confirm-panel').style.display = 'block';
+  document.getElementById('im-footer').style.display = 'none';
+}
+function cancelReplace() {
+  document.getElementById('im-confirm-panel').style.display = 'none';
+  document.getElementById('im-footer').style.display = '';
+}
+function confirmReplace() {
+  const incoming = window._importBuffer || [];
+  if (!incoming.length) return;
+  tools = incoming;
+  save(); closeModal('importOverlay'); renderTools();
+  cancelReplace();
+  showToast(`Done. ${tools.length} tools loaded.`);
+}
+
 function doImport(mode) {
   const incoming = window._importBuffer || [];
   if (!incoming.length) return;
-
-  if (mode === 'replace') {
-    if (!confirm(`This will DELETE all ${tools.length} existing tools and replace with ${incoming.length} from the backup file. Are you sure?`)) return;
-    tools = incoming;
-  } else {
-    // Merge — skip any records whose id already exists
-    const existingIds = new Set(tools.map(t => String(t.id)));
-    const newItems = incoming.filter(t => !existingIds.has(String(t.id)));
-    const skipped  = incoming.length - newItems.length;
-    tools = [...tools, ...newItems];
-    const msg = skipped > 0
-      ? `Imported ${newItems.length} new tools. Skipped ${skipped} duplicate(s) already in your inventory.`
-      : `Imported ${newItems.length} new tools.`;
-    save(); closeModal('importOverlay'); renderTools();
-    alert(msg);
-    return;
-  }
-
+  // Merge — skip any records whose id already exists
+  const existingIds = new Set(tools.map(t => String(t.id)));
+  const newItems = incoming.filter(t => !existingIds.has(String(t.id)));
+  const skipped  = incoming.length - newItems.length;
+  tools = [...tools, ...newItems];
+  const msg = skipped > 0
+    ? `Imported ${newItems.length} new tools. Skipped ${skipped} duplicate(s).`
+    : `Imported ${newItems.length} new tools.`;
   save(); closeModal('importOverlay'); renderTools();
-  alert(`Done. ${tools.length} tools loaded.`);
+  showToast(msg);
+}
+
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#222;color:#fff;font-family:var(--mono);font-size:0.8rem;padding:0.6rem 1.2rem;border-radius:4px;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'importOverlay') cancelReplace();
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────
 renderTools();
