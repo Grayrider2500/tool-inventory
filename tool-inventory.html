@@ -720,6 +720,22 @@ let pendingImport = null; // holds parsed backup data waiting for confirm
 
 function save() { localStorage.setItem(STORE_KEY, JSON.stringify(tools)); }
 
+function saveOrStrip() {
+  try {
+    save();
+    return 'ok';
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22 || (e.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
+      // Storage full — retry without photos
+      const stripped = tools.map(t => Object.assign({}, t, { photos: [] }));
+      localStorage.setItem(STORE_KEY, JSON.stringify(stripped));
+      tools = stripped;
+      return 'no-photos';
+    }
+    throw e;
+  }
+}
+
 // ── SUBTITLE ──────────────────────────────────────────────────────────
 const SUBTITLE_KEY = 'inventory_subtitle';
 (function initSubtitle() {
@@ -1083,10 +1099,14 @@ function confirmReplace() {
     if (!pendingImport || !pendingImport.length) { showToast('No backup data — please re-select the file'); return; }
     tools = pendingImport;
     pendingImport = null;
-    save();
+    const result = saveOrStrip();
     closeModal('importOverlay');
     renderTools();
-    showToast(`Done. ${tools.length} tools loaded.`);
+    if (result === 'no-photos') {
+      showToast(`Loaded ${tools.length} tools — photos skipped (storage limit reached)`, 5000);
+    } else {
+      showToast(`Done. ${tools.length} tools loaded.`);
+    }
   } catch(e) {
     showToast('Error: ' + (e.message || 'unknown error'));
   }
@@ -1104,11 +1124,12 @@ function doImport(mode) {
   const msg = skipped > 0
     ? `Imported ${newItems.length} new tools. Skipped ${skipped} duplicate(s).`
     : `Imported ${newItems.length} new tools.`;
-  save(); closeModal('importOverlay'); renderTools();
-  showToast(msg);
+  const result = saveOrStrip();
+  closeModal('importOverlay'); renderTools();
+  showToast(result === 'no-photos' ? msg + ' (photos skipped — storage full)' : msg);
 }
 
-function showToast(msg) {
+function showToast(msg, duration) {
   let t = document.getElementById('toast');
   if (!t) {
     t = document.createElement('div');
@@ -1119,7 +1140,7 @@ function showToast(msg) {
   t.textContent = msg;
   t.style.opacity = '1';
   clearTimeout(t._timer);
-  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, duration || 3000);
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────
