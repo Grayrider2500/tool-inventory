@@ -863,7 +863,7 @@ function renderTools() {
   }
 
   grid.innerHTML = list.map(t => {
-    const dispVal = parseFloat(t.value) || parseFloat(t.purchase) || 0;
+    const dispVal = parseFloat(t.value)||parseFloat(t.purchase)||0;
     const cc = catColor(t.category);
     const ck = catKey(t.category);
     const thumb = t.photos && t.photos[0];
@@ -922,6 +922,7 @@ function renderTools() {
       </div>
     </div>`;
   }).join('');
+  void grid.offsetHeight; // force iOS repaint after base64 images are injected
 }
 
 // ── ADD / EDIT MODAL ─────────────────────────────────────────────────
@@ -1150,7 +1151,7 @@ function closeModal(id) {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
-renderTools();
+requestAnimationFrame(() => renderTools());
 </script>
 </body>
 </html>
